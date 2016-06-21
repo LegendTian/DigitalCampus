@@ -1,0 +1,4 @@
+JDCJA  机电车间A
+JDCJB  机电车间B
+GCJGCF  工程结构厂房
+TSG    图书馆

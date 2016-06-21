@@ -1,0 +1,206 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="description" content="LTMap Earth">
+    <meta name="cesium-sandcastle-labels" content="Showcases">
+    <title>UNIGLOBE</title>
+    <script src="Cesium119/Cesium.js"></script>
+    <script type="text/javascript" src="Cesium119/Sandcastle-header.js"></script>
+    <script type="text/javascript" src="./javascripts/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="./javascripts/require.min.js"></script>
+    <script type="text/javascript" src="./javascripts/GeoLocationButton.js"></script>
+    <script type="text/javascript" src="./javascripts/utils.js"></script>
+    <script type="text/javascript" src="./javascripts/LTCesium.js"></script>
+    <script type="text/javascript" src="./javascripts/papaparse.min.js"></script>
+    <script type="text/javascript" src="./javascripts/app.js"></script>
+    <script type="text/javascript">
+        require.config({
+            baseUrl: './Cesium119',
+            waitSeconds: 60
+        });
+    </script>
+</head>
+<body class="sandcastle-loading">
+<style>
+    @import url(styles/style.css);
+
+
+</style>
+<div class="logo-top"></div>
+<div id="cesiumContainer" class="fullSize"></div>
+
+<div id="loadingOverlay" class="loadingIndicator"></div>
+
+<div  class="toolbar-left cesium-button">
+    <div id="lt-btn-viewer" title="显示视点列表" ></div>
+</div>
+<div class="toolbar" id="view-lists">
+    <div id="add-view-list" class="cesium-button pad-4-y">添加当前视点</div>
+    <div id="view-lists-content">
+        <div  class="cesium-button view-listItem">视点1</div>
+        <div  class="cesium-button view-listItem">视点2</div>
+        <div  class="cesium-button view-listItem">视点2</div>
+    </div>
+</div>
+
+
+    <div id="viewer-manager" class="toolbar-right cesium-viewer-geocoderContainer">
+        <div class="cesium-geocoder-input">
+            <div class="overflow-hide">
+                <div id="lt-btn-fly-route" class="cesium-button pad-4-y">制定线路</div>
+                <div id="lt-btn-fly" class="cesium-button pad-4-y">飞行设置</div>
+            </div>
+
+        </div>
+        <span class="cesium-geocoder-searchButton"></span>
+
+    </div>
+    <div id="viewer-ctrl" class="toolbar-right cesium-viewer-geocoderContainer">
+        <div class="cesium-geocoder-input">
+            <div class="overflow-hide">
+                <div id="view-north-btn" class="cesium-button pad-4-y">正北</div>
+                <div id="view-head-btn" class="cesium-button pad-4-y">顶视</div>
+                <div class="cesium-button pad-4-y">透视</div>
+            </div>
+
+        </div>
+        <span class="cesium-geocoder-searchButton"></span>
+
+    </div>
+    <div id="viewer-animation" class="toolbar-right cesium-viewer-geocoderContainer">
+        <div class="cesium-geocoder-input">
+            <div class="overflow-hide">
+            <div class="cesium-button pad-4-y">空间</div>
+            <div class="cesium-button pad-4-y">垂直</div>
+            <div class="cesium-button pad-4-y">面积</div>
+            </div>
+        </div>
+        <span class="cesium-geocoder-searchButton"></span>
+
+    </div>
+
+
+
+<div  class="toolbar-bottom cesium-button">
+    <div id="lt-btn-full-view" title="显示鹰眼"></div>
+
+</div>
+<div class="toolbar" id="over-view"></div>
+<script id="cesium_sandcastle_script">
+    var ltcs,viewer;
+    function startup(Cesium) {
+        "use strict";
+        //Sandcastle_Begin
+        ltcs=new LTCesium('cesiumContainer');
+        //默认视图范围
+        ltcs.DEFAULT_VIEW_RECTANGLE(118.0, 31.0, 118.001, 31.00001);
+
+
+        var loadingIndicator = document.getElementById('loadingOverlay');
+        viewer=ltcs.viewer;
+        try {
+            ltcs.addBaseLayer(ltcs.gmarsvm);
+            ltcs.addBaseLayer(ltcs.gmoonvm);
+            ltcs.addBaseLayer(ltcs.gevm);
+
+        } catch (exception) {
+            loadingIndicator.style.display = 'none';
+            var message = formatError(exception);
+            console.error(message);
+            if (!document.querySelector('.cesium-widget-errorPanel')) {
+                window.alert(message);
+            }
+            return;
+        }
+
+
+        //插入按钮
+        GeoLocationButton(viewer);
+
+
+        ltcs.setProductInfo("");
+
+        ltcs.initTimeline(ltcs.start,ltcs.stop);
+
+        var camera = viewer.camera;
+        camera.moveStart.addEventListener(function() {
+            console.log("moveStart",camera.heading,camera.pitch,camera.roll);
+        });
+        camera.moveEnd.addEventListener(function() {
+            console.log("moveEnd",camera.heading,camera.pitch,camera.roll);
+            var longitude = ltcs.radian2angle(camera.pitch,2);
+            console.log(longitude);
+            console.log("camera",camera);
+            console.log(ltcs.getDestAndOri(camera));
+
+
+        });
+
+        var scene=viewer.scene;
+        addSchoolModel();
+
+        setTimeout(function(){
+            //ltcs.flyTo(118.8936, 31.9065, 30.0);
+            ltcs.flyToDestAndOri(jinlingLocation);
+            addSchoolLabel();
+        },5000);
+
+
+        var element = document.getElementById("lt-btn-viewer");
+        element.onclick = function(event){
+            setDivVisible("lt-btn-viewer","view-lists","视点列表","LT",40,75);
+        };
+        var ov = document.getElementById("lt-btn-full-view");
+        ov.onclick = function(event){
+            setDivVisible("lt-btn-full-view","over-view","鹰眼","RB",30,30);
+        };
+        var avl=document.getElementById("add-view-list");
+        avl.onclick = function(event){
+            viewListsData.push(ltcs.getDestAndOri(camera)) ;
+            console.log(viewListsData,"viewListsData");
+            initViewList(viewListsData);
+        };
+
+
+        var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function (movement) {
+            var windowPosition = viewer.camera.getPickRay(movement.position);
+            var cartoCoordinates = viewer.scene.globe.pick(windowPosition, viewer.scene);
+            console.log(cartoCoordinates);
+            flyListsData.push(cartoCoordinates);
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        var fly=document.getElementById("lt-btn-fly");
+        fly.onclick= function (event) {
+            flyByRoute();
+        }
+
+        var viewNorth=document.getElementById("view-north-btn");
+        viewNorth.onclick= function (event) {
+            ltcs.flyToDestAndOri(jlNorth);
+        }
+        var viewHead=document.getElementById("view-head-btn");
+        viewHead.onclick= function (event) {
+            ltcs.flyToDestAndOri(jlHead);
+        }
+
+        //Sandcastle_End
+        Sandcastle.finishedLoading();
+        loadingIndicator.style.display = 'none';
+    }
+
+    if (typeof Cesium !== "undefined") {
+        startup(Cesium);
+    } else if (typeof require === "function") {
+        require(["Cesium"], startup);
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="description" content="http://map.vmap.xyz/">
+    <meta name="cesium-sandcastle-labels" content="Showcases">
+    <title>飞行示例1</title>
+    <script src="Cesium119/Cesium.js"></script>
+    <script type="text/javascript" src="Cesium119/Sandcastle-header.js"></script>
+    <script type="text/javascript" src="./javascripts/require.min.js"></script>
+    <script type="text/javascript">
+        require.config({
+            baseUrl: './Cesium119',
+            waitSeconds: 60
+        });
+    </script>
+</head>
+<body class="sandcastle-loading">
+<style>
+    @import url(styles/style.css);
+
+
+</style>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<div id="toolbar">
+    <div id="routeMenu"></div>
+    <div id="interpolationMenu"></div>
+</div>
+<div id="datashow">
+    <table id="postable" border="1">
+        <tr>
+            <th colspan="2">位置信息</th>
+        </tr>
+        <tr>
+            <td>X:</td>
+            <td data-bind="text: posX"></td>
+        </tr>
+        <tr>
+            <td>Y:</td>
+            <td data-bind="text: posY"></td>
+        </tr>
+        <tr>
+            <td>Z:</td>
+            <td data-bind="text: posZ"></td>
+        </tr>
+    </table>
+    <table id="oritable" border="1">
+        <tr>
+            <th colspan="2">姿态信息</th>
+        </tr>
+        <tr>
+            <td>偏航角:</td>
+            <td data-bind="text: yaw"></td>
+        </tr>
+        <tr>
+            <td>倾斜角:</td>
+            <td data-bind="text: pitch"></td>
+        </tr>
+        <tr>
+            <td>滚动角:</td>
+            <td data-bind="text: roll"></td>
+        </tr>
+    </table>
+</div>
+
+<script id="cesium_sandcastle_script">
+    var dataViewModel = {
+        posX: Cesium.knockout.observable(0),
+        posY: Cesium.knockout.observable(0),
+        posZ: Cesium.knockout.observable(0),
+        yaw: Cesium.knockout.observable(0),
+        pitch: Cesium.knockout.observable(0),
+        roll: Cesium.knockout.observable(0)
+    };
+    function startup(Cesium) {
+        "use strict";
+//Sandcastle_Begin
+        //var baseUrl = 'http://localhost:3000/';
+        var baseUrl = 'http://map.vmap.xyz/';
+        var gevm = new Cesium.ProviderViewModel({
+            name: 'LTMap Earth',
+            iconUrl: Cesium.buildModuleUrl('../images/VMap_Earth.png'),
+            tooltip: 'LTMap Earth Image Online',
+            creationFunction: function () {
+                return new Cesium.UrlTemplateImageryProvider({
+                    url: baseUrl + 'wmts/geearth/{z}/{x}/{y}.jpg',
+                    pickFeaturesUrl: baseUrl + 'wmts/geearth/feature/{z}/{x}/{y}/{j}/{i}.json',
+                    getFeatureInfoFormats: [new Cesium.GetFeatureInfoFormat('json', 'application/json', function (data) {
+                        return Cesium.when(data)
+                    })],
+                    tilingScheme: new Cesium.GeographicTilingScheme(),
+                    maximumLevel: 19,
+                    credit: 'LTMap Earth'
+                });
+            }
+        });
+
+        Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(105.0, -20.0, 130.0, 90.0);
+        Cesium.BingMapsApi.defaultKey = 'AhvUs7XgkXOG6zG4sYHDrc2Rykr2gyELRMuXDPHa5oI6pcvu8c8b88tiP4pgq2m2';
+        var viewer = new Cesium.Viewer('cesiumContainer', {
+            selectedImageryProviderViewModel: gevm,
+            terrainProviderViewModels: [], //Disable terrain changing
+            infoBox: false, //Disable InfoBox widget
+            selectionIndicator: false //Disable selection indicator
+            //imageryProvider:ge
+        });
+        viewer.baseLayerPicker.viewModel.imageryProviderViewModels.unshift(gevm);
+        //Enable lighting based on sun/moon positions
+        //viewer.scene.globe.enableLighting = true;
+        viewer.cesiumWidget.creditContainer.remove();
+//Use STK World Terrain
+        viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: '//assets.agi.com/stk-terrain/world',
+            requestWaterMask: true,
+            requestVertexNormals: true
+        });
+
+//Enable depth testing so things behind the terrain disappear.
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+//Set the random number seed for consistent results.
+        Cesium.Math.setRandomNumberSeed(3);
+
+//Set bounds of our simulation time
+        var start = Cesium.JulianDate.fromDate(new Date());
+        var stop = Cesium.JulianDate.addSeconds(start, 360, new Cesium.JulianDate());
+
+//Make sure viewer is at the desired time.
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+        viewer.clock.multiplier = 3;
+
+//Set timeline to simulation bounds
+        viewer.timeline.zoomTo(start, stop);
+
+        var elon = 115;
+        var elat = 40.02;
+        var eradius = 0.03;
+        var curEntity;
+//Generate a random circular pattern with varying heights.
+        function add0Route(lon, lat, radius) {
+            var property = new Cesium.SampledPositionProperty();
+            for (var i = 0; i <= 360; i += 45) {
+                var radians = Cesium.Math.toRadians(i);
+                var time = Cesium.JulianDate.addSeconds(start, i, new Cesium.JulianDate());
+                var position = Cesium.Cartesian3.fromDegrees(lon + (radius * 1.5 * Math.cos(radians)), lat + (radius * Math.sin(radians)), Cesium.Math.nextRandomNumber() * 500 + 1750);
+                property.addSample(time, position);
+                //Also create a point for each sample we generate.
+                viewer.entities.add({
+                    position: position,
+                    point: {
+                        pixelSize: 8,
+                        color: Cesium.Color.TRANSPARENT,
+                        outlineColor: Cesium.Color.YELLOW,
+                        outlineWidth: 3
+                    }
+                });
+            }
+            property.setInterpolationOptions({
+                interpolationDegree: 5,
+                interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+            });
+
+            //Actually create the entity
+            curEntity = viewer.entities.add({
+                //Set the entity availability to the same interval as the simulation time.
+                availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                    start: start,
+                    stop: stop
+                })]),
+
+                //Use our computed positions
+                position: property,
+
+                //Automatically compute orientation based on position movement.
+                orientation: new Cesium.VelocityOrientationProperty(property),
+
+                //Load the Cesium plane model to represent the entity
+                model: {
+                    uri: './Assets/CZML/models/CesiumAir/Cesium_Air.gltf',
+                    minimumPixelSize: 64
+                },
+
+                //Show the path as a pink line sampled in 1 second increments.
+                path: {
+                    resolution: 1,
+                    material: new Cesium.PolylineGlowMaterialProperty({
+                        glowPower: 0.1,
+                        color: Cesium.Color.YELLOW
+                    }),
+                    width: 10
+                }
+            });
+        }
+
+        function add8Route(lon, lat, radius) {
+            var property = new Cesium.SampledPositionProperty();
+            for (var i = 0; i <= 360; i += 30) {
+                var radians = Cesium.Math.toRadians(i);
+                if(i>90&&i<270){
+                    radians=-radians;
+                }
+                var time = Cesium.JulianDate.addSeconds(start, i, new Cesium.JulianDate());
+                var cosA = Math.cos(radians);
+                var sinA = Math.sin(radians);
+                var r =Math.abs(radius*cosA);
+                var position = Cesium.Cartesian3.fromDegrees(lon + (r*cosA), lat + (r*sinA), Cesium.Math.nextRandomNumber() * 500 + 1750);
+                property.addSample(time, position);
+                //Also create a point for each sample we generate.
+                viewer.entities.add({
+                    position: position,
+                    point: {
+                        pixelSize: 8,
+                        color: Cesium.Color.TRANSPARENT,
+                        outlineColor: Cesium.Color.YELLOW,
+                        outlineWidth: 3
+                    }
+                });
+            }
+            property.setInterpolationOptions({
+                interpolationDegree: 5,
+                interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+            });
+
+            //Actually create the entity
+            curEntity = viewer.entities.add({
+                //Set the entity availability to the same interval as the simulation time.
+                availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                    start: start,
+                    stop: stop
+                })]),
+
+                //Use our computed positions
+                position: property,
+
+                //Automatically compute orientation based on position movement.
+                orientation: new Cesium.VelocityOrientationProperty(property),
+
+                //Load the Cesium plane model to represent the entity
+                model: {
+                    uri: './Assets/CZML/models/CesiumAir/Cesium_Air.gltf',
+                    minimumPixelSize: 64
+                },
+
+                //Show the path as a pink line sampled in 1 second increments.
+                path: {
+                    resolution: 1,
+                    material: new Cesium.PolylineGlowMaterialProperty({
+                        glowPower: 0.1,
+                        color: Cesium.Color.YELLOW
+                    }),
+                    width: 10
+                }
+            });
+        }
+
+        add0Route(elon, elat, eradius);
+
+//Add button to view the path from the top down
+        Sandcastle.addDefaultToolbarButton('视角：从上往下', function () {
+            viewer.trackedEntity = undefined;
+            viewer.zoomTo(viewer.entities, new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90)));
+        });
+
+//Add button to view the path from the side
+        Sandcastle.addToolbarButton('视角：侧面', function () {
+            viewer.trackedEntity = undefined;
+            viewer.zoomTo(viewer.entities, new Cesium.HeadingPitchRange(Cesium.Math.toRadians(-90), Cesium.Math.toRadians(-15), 7500));
+        });
+
+//Add button to track the entity as it moves
+        Sandcastle.addToolbarButton('视角：飞机', function () {
+            viewer.trackedEntity = curEntity;
+        });
+
+        Sandcastle.addToolbarMenu([{
+            text: '圆形轨迹',
+            onselect: function () {
+                viewer.entities.removeAll();
+                add0Route(elon,elat,eradius);
+            }
+        },
+            {
+                text: '八字轨迹',
+                onselect: function () {
+                    viewer.entities.removeAll();
+                    add8Route(elon,elat,eradius);
+                }
+            }], 'routeMenu');
+
+//Add a combo box for selecting each interpolation mode.
+        Sandcastle.addToolbarMenu([{
+            text: '插值方法: 线性近似',
+            onselect: function () {
+                curEntity.position.setInterpolationOptions({
+                    interpolationDegree: 1,
+                    interpolationAlgorithm: Cesium.LinearApproximation
+                });
+            }
+        }, {
+            text: '插值方法：拉格朗日多项式',
+            onselect: function () {
+                curEntity.position.setInterpolationOptions({
+                    interpolationDegree: 5,
+                    interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+                });
+            }
+        }, {
+            text: '插值方法：埃尔米特多项式',
+            onselect: function () {
+                curEntity.position.setInterpolationOptions({
+                    interpolationDegree: 2,
+                    interpolationAlgorithm: Cesium.HermitePolynomialApproximation
+                });
+            }
+        }], 'interpolationMenu');
+        document.getElementById("interpolationMenu").getElementsByTagName('select')[0].selectedIndex = 1;
+        var camera = viewer.camera;
+        Cesium.knockout.applyBindings(dataViewModel, document.getElementById('datashow'));
+        viewer.clock.onTick.addEventListener(function (clock) {
+            var pos = curEntity.position.getValue(clock.currentTime);
+            dataViewModel.posX(pos.x);
+            dataViewModel.posY(pos.y);
+            dataViewModel.posZ(pos.z);
+            console.log()
+            var r2d = 180 / Math.PI;
+            var ori = curEntity.orientation.getValue(clock.currentTime);
+            console.log("camera",camera.heading,camera.pitch,camera.roll);
+            console.log("ori",ori.w , ori.x , ori.y , ori.z);
+            var phi = Math.atan2(2 * (ori.w * ori.x + ori.y * ori.z), 1 - 2 * (ori.x * ori.x + ori.y * ori.y));
+            var theta = Math.asin(2 * (ori.w * ori.y - ori.z * ori.x));
+            var psi = Math.atan2(2 * (ori.w * ori.z + ori.x * ori.y), 1 - 2 * (ori.y * ori.y + ori.z * ori.z));
+            dataViewModel.yaw(psi * r2d);
+            dataViewModel.pitch(theta * r2d);
+            dataViewModel.roll(phi * r2d);
+            //dataViewModel.oreX()
+            console.log("dataViewModel",dataViewModel.yaw,dataViewModel.pitch, dataViewModel.roll);
+        });
+
+//Sandcastle_End
+        Sandcastle.finishedLoading();
+    }
+    if (typeof Cesium !== "undefined") {
+        startup(Cesium);
+    } else if (typeof require === "function") {
+        require(["Cesium"], startup);
+    }
+</script>
+</body>
+</html>;
