@@ -139,16 +139,29 @@ function flyByRoute(){
 var addSchoolModel= function () {
     //ltcs.createGlbModel('./Assets/CZML/models/CesiumMan/Cesium_Man.glb',117.161, 32.71, 0);
 
-    //ltcs.addModel('./data/models/JDCJA.gltf',1,118.8912222,31.90682222, 0,72,0,0);
-    //ltcs.addModel('./data/models/JDCJB.gltf',1,118.8912222,31.90679855, 0,72,0,0);
-    //ltcs.addModel('./data/models/GCJGCF.gltf',1,118.8912667,31.90682222, 0,72,0,0);
-    //ltcs.addModel('./data/models/TSG.gltf',1.1,118.8950678,31.90562333, 0,72,0,0);
-    //ltcs.addModel('./data/models/BQST.gltf',1,118.895292104563,31.909070185167, 0,72,0,0);
-    //ltcs.addModel('./data/models/GKL.gltf',1,118.892265574979,31.906060605034, 0,-20,0,0);
-    //ltcs.addModel('./data/models/XZL.gltf',1,118.892750022,31.90358269904, 0,-20,0,0);
-    //ltcs.addModel('./data/models/NQSTHQL.gltf',1,118.897100965230,31.902720145236, 0,-19,0,0);
-    //ltcs.addModel('./data/models/TYG.gltf',1,118.896251627308,31.900732517926, 0,-19,0,0);
-    ltcs.addModel('./data/models/JKGB.gltf',1,118.893692331421,31.901147722035, 0,-19,0,0);
+
+    //ltcs.addModel('./data/models/DX.gltf',1,118.8852508390,31.8988190356, 0,0,0,0);
+
+    /*ltcs.addModel('./data/models/JKBG.gltf',1,118.894299993421,31.900852722035, 0,0,0,0);
+    ltcs.addModel('./data/models/TSG.gltf',1.1,118.8951288,31.90562233, 0,72,0,0);
+    ltcs.addModel('./data/models/TYG.gltf',1,118.8963027308,31.90066926, 0,-19,0,0);
+
+
+    ltcs.addModel('./data/models/JDCJA.gltf',1,118.8912222,31.90682222, 0,72,0,0);
+    ltcs.addModel('./data/models/JDCJB.gltf',1,118.8912222,31.90679855, 0,72,0,0);
+    ltcs.addModel('./data/models/GCJGCF.gltf',1,118.8912667,31.90682222, 0,72,0,0);
+
+    ltcs.addModel('./data/models/BQST.gltf',1,118.895292104563,31.909070185167, 0,72,0,0);
+    ltcs.addModel('./data/models/GKL.gltf',1,118.892265574979,31.906060605034, 0,-20,0,0);
+    ltcs.addModel('./data/models/XZL.gltf',1,118.892750022,31.90358269904, 0,-20,0,0);
+    ltcs.addModel('./data/models/NQSTHQL.gltf',1,118.897100965230,31.902720145236, 0,-19,0,0);
+    ltcs.addModel('./data/models/JXL345.gltf',1,118.89449401889,31.904127874771, 0,-20,0,0);
+    ltcs.addModel('./data/models/jxl678.gltf',1,118.895723872652,31.904792890584, 0,-20,0,0);
+
+     */
+
+    ltcs.addModel('./data/models/jxl678.gltf',1,118.895723872652,31.904792890584, 0,-20,0,0);
+
 }
 
 var addSchoolLabel= function () {
