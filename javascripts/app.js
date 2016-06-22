@@ -140,7 +140,7 @@ var addSchoolModel= function () {
     //ltcs.createGlbModel('./Assets/CZML/models/CesiumMan/Cesium_Man.glb',117.161, 32.71, 0);
 
 
-    ltcs.addModel('./data/models/DX.gltf',1,118.8852508390,31.8988190356, 0,0,0,0);
+    //ltcs.addModel('./data/models/DX.gltf',1,118.8852508390,31.8988190356, 0,0,0,0);
 
     /*ltcs.addModel('./data/models/JKBG.gltf',1,118.894299993421,31.900852722035, 0,0,0,0);
     ltcs.addModel('./data/models/TSG.gltf',1.1,118.8951288,31.90562233, 0,72,0,0);
@@ -160,10 +160,13 @@ var addSchoolModel= function () {
      ltcs.addModel('./data/models/SS4L.gltf',1,118.898231311783,31.899717508373, 0,-20,0,0);
      ltcs.addModel('./data/models/SS4L.gltf',1,118.896731311783,31.900868508373, 0,-20,0,0);
      ltcs.addModel('./data/models/SS4L.gltf',1,118.896439311783,31.901578508373, 0,-20,0,0);
+     ltcs.addModel('./data/NQSSL/SSL8.gltf',1,118.896974029260,31.901895538818, 0,-20,0,0);
+     ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.898765450138,31.901381167228, 0,-20,0,0);
+     ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.8972891532,31.901151167228, 0,-20,0,0);
      */
 
 
-    ltcs.addModel('./data/models/5SSL.gltf',1,118.896439311783,31.901578508373, 0,-20,0,0);
+    ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.8972891532,31.901151167228, 0,-20,0,0);
 }
 
 var addSchoolLabel= function () {
