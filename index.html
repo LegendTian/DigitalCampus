@@ -93,6 +93,7 @@
 <div class="toolbar" id="over-view"></div>
 <script id="cesium_sandcastle_script">
     var ltcs,viewer;
+    var loadingIndicator;
     function startup(Cesium) {
         "use strict";
         //Sandcastle_Begin
@@ -101,7 +102,8 @@
         ltcs.DEFAULT_VIEW_RECTANGLE(118.0, 31.0, 118.001, 31.00001);
 
 
-        var loadingIndicator = document.getElementById('loadingOverlay');
+        loadingIndicator = document.getElementById('loadingOverlay');
+        loadingIndicator.style.display = 'block';
         viewer=ltcs.viewer;
         try {
             ltcs.addBaseLayer(ltcs.gmarsvm);
@@ -109,7 +111,7 @@
             ltcs.addBaseLayer(ltcs.gevm);
 
         } catch (exception) {
-            loadingIndicator.style.display = 'none';
+            //loadingIndicator.style.display = 'none';
             var message = formatError(exception);
             console.error(message);
             if (!document.querySelector('.cesium-widget-errorPanel')) {
@@ -141,7 +143,7 @@
 
         });
 
-        var scene=viewer.scene;
+
         addSchoolModel();
 
         setTimeout(function(){
@@ -188,10 +190,10 @@
         viewHead.onclick= function (event) {
             ltcs.flyToDestAndOri(jlHead);
         }
-
+        loadingIndicator.style.display = 'none';
         //Sandcastle_End
         Sandcastle.finishedLoading();
-        loadingIndicator.style.display = 'none';
+
     }
 
     if (typeof Cesium !== "undefined") {

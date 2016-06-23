@@ -137,36 +137,75 @@ function flyByRoute(){
 }
 
 var addSchoolModel= function () {
-    //ltcs.createGlbModel('./Assets/CZML/models/CesiumMan/Cesium_Man.glb',117.161, 32.71, 0);
 
-
-    //ltcs.addModel('./data/models/DX.gltf',1,118.8852508390,31.8988190356, 0,0,0,0);
-
-    /*ltcs.addModel('./data/models/JKBG.gltf',1,118.894299993421,31.900852722035, 0,0,0,0);
+    ltcs.addModel('./data/models/DX.gltf',1,118.8852508390,31.8988190356, 0,0,0,0);
+    ltcs.addModel('./data/models/JKBG.gltf',1,118.894299993421,31.900852722035, 0,0,0,0);
     ltcs.addModel('./data/models/TSG.gltf',1.1,118.8951288,31.90562233, 0,72,0,0);
     ltcs.addModel('./data/models/TYG.gltf',1,118.8963027308,31.90066926, 0,-19,0,0);
-
-
-    ltcs.addModel('./data/models/JDCJA.gltf',1,118.8912222,31.90682222, 0,72,0,0);
-    ltcs.addModel('./data/models/JDCJB.gltf',1,118.8912222,31.90679855, 0,72,0,0);
-    ltcs.addModel('./data/models/GCJGCF.gltf',1,118.8912667,31.90682222, 0,72,0,0);
-
-    ltcs.addModel('./data/models/BQST.gltf',1,118.895292104563,31.909070185167, 0,72,0,0);
-    ltcs.addModel('./data/models/GKL.gltf',1,118.892265574979,31.906060605034, 0,-20,0,0);
     ltcs.addModel('./data/models/XZL.gltf',1,118.892750022,31.90358269904, 0,-20,0,0);
-    ltcs.addModel('./data/models/NQSTHQL.gltf',1,118.897100965230,31.902720145236, 0,-19,0,0);
+    ltcs.addModel('./data/models/GKL.gltf',1,118.892265574979,31.906060605034, 0,-20,0,0);
+
     ltcs.addModel('./data/models/JXL345.gltf',1,118.89449401889,31.904127874771, 0,-20,0,0);
     ltcs.addModel('./data/models/jxl678.gltf',1,118.895723872652,31.904792890584, 0,-20,0,0);
-     ltcs.addModel('./data/models/SS4L.gltf',1,118.898231311783,31.899717508373, 0,-20,0,0);
-     ltcs.addModel('./data/models/SS4L.gltf',1,118.896731311783,31.900868508373, 0,-20,0,0);
-     ltcs.addModel('./data/models/SS4L.gltf',1,118.896439311783,31.901578508373, 0,-20,0,0);
-     ltcs.addModel('./data/NQSSL/SSL8.gltf',1,118.896974029260,31.901895538818, 0,-20,0,0);
-     ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.898765450138,31.901381167228, 0,-20,0,0);
-     ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.8972891532,31.901151167228, 0,-20,0,0);
-     */
+    ltcs.addModel('./data/models/JDCJA.gltf',1,118.8912222,31.90682222, 0,72,0,0);
+    ltcs.addModel('./data/models/JDCJB.gltf',1,118.8912222,31.90679855, 0,72,0,0);
+    //ltcs.addModel('./data/models/GCJGCF.gltf',1,118.8912667,31.90682222, 0,72,0,0);
+    //ltcs.addModel('./data/models/NQSTHQL.gltf',1,118.897100965230,31.902720145236, 0,-19,0,0);
+    //ltcs.addModel('./data/models/BQST.gltf',1,118.895292104563,31.909070185167, 0,72,0,0);
+    ltcs.addModel('./data/NQSSL/SSL8.gltf',1,118.896974029260,31.901895538818, 0,-20,0,0);
+    ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.898765450138,31.901381167228, 0,-20,0,0);
+    //ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.8972891532,31.901151167228, 0,-20,0,0);
+
+    ltcs.addModel('./data/BQ5SSL/JXL1.gltf',1,118.892371181284,31.908946342813, 0,-20,0,0);
+    ltcs.addModel('./data/BQ5SSL/JXL2.gltf',1,118.8928953878,31.9077883835, 0,-20,0,0);
+    ltcs.addModel('./data/BQ5SSL/BQ5SSL.gltf',1,118.894828508390,31.910175190356, 0,-20,0,0);
+    ltcs.addModel('./data/BQ5SSL/BQ6SSL.gltf',1,118.895559799068,31.908331205222, 0,-20,0,0);
+    //ltcs.addModel('./data/BQ5SSL/BQ12SSL.gltf',1,118.893887604015,31.909889384189, 0,-20,0,0);
+    //ltcs.addModel('./data/BQ5SSL/BQ12SSL.gltf',1,118.894483364153,31.908422679527, 0,-20,0,0);
 
 
-    ltcs.addModel('./data/NQSSL/SSL5.gltf',1,118.8972891532,31.901151167228, 0,-20,0,0);
+    /*setTimeout(function () {
+
+
+    },10000);*/
+
+    /*setTimeout(function () {
+        console.log("第二批模型加载启动！");
+
+        ltcs.addModel('./data/models/SS4L.gltf',1,118.898231311783,31.899717508373, 0,-20,0,0);
+        ltcs.addModel('./data/models/SS4L.gltf',1,118.896731311783,31.900868508373, 0,-20,0,0);
+        ltcs.addModel('./data/models/SS4L.gltf',1,118.896439311783,31.901578508373, 0,-20,0,0);
+
+    },15000*2);
+
+    setTimeout(function () {
+         console.log("第三批模型加载启动！");
+
+    },15000*3);
+
+      setTimeout(function () {
+
+    },15000*4);
+
+    setTimeout(function () {
+
+
+    },15000*5);*/
+
+
+    /*
+
+
+
+
+
+
+
+
+    */
+
+
+
 }
 
 var addSchoolLabel= function () {
